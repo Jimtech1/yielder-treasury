@@ -20,6 +20,13 @@ function AppShell() {
   const [activeTab, setActiveTab] = useState<TabId>('dashboard');
   const [walletModalOpen, setWalletModalOpen] = useState(false);
 
+  // Auto-transition when wallet connects
+  React.useEffect(() => {
+    if (state.walletConnected && showLanding) {
+      setShowLanding(false);
+    }
+  }, [state.walletConnected, showLanding]);
+
   if (showLanding && !state.walletConnected) {
     return (
       <>
