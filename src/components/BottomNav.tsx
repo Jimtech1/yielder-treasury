@@ -8,6 +8,7 @@ const TABS = [
   { id: 'bridge', icon: '🌉', label: 'Bridge' },
   { id: 'treasury', icon: '📈', label: 'T-Bills' },
   { id: 'portfolio', icon: '💼', label: 'Portfolio' },
+  { id: 'transactions', icon: '📋', label: 'History' },
   { id: 'kyc', icon: '✅', label: 'KYC' },
   { id: 'settings', icon: '⚙️', label: 'Settings' },
 ] as const;

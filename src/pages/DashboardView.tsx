@@ -46,11 +46,11 @@ export default function DashboardView() {
   return (
     <div className="space-y-6">
       {/* Summary cards */}
-      <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x">
+      <div className="grid grid-cols-2 gap-2">
         {cards.map(c => (
-          <div key={c.label} className={`${c.color} rounded-2xl p-4 min-w-[160px] snap-start flex-shrink-0`}>
-            <div className="text-xs text-primary-foreground/70">{c.label}</div>
-            <div className="text-xl font-bold text-primary-foreground mt-1">{c.value}</div>
+          <div key={c.label} className={`${c.color} rounded-2xl p-3`}>
+            <div className="text-[10px] text-primary-foreground/70">{c.label}</div>
+            <div className="text-base font-bold text-primary-foreground mt-0.5 truncate">{c.value}</div>
           </div>
         ))}
       </div>
