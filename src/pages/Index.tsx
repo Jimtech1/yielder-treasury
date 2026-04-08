@@ -20,13 +20,7 @@ function AppShell() {
   const [activeTab, setActiveTab] = useState<TabId>('dashboard');
   const [walletModalOpen, setWalletModalOpen] = useState(false);
 
-  React.useEffect(() => {
-    if (state.walletConnected && showLanding) {
-      setShowLanding(false);
-    }
-  }, [state.walletConnected, showLanding]);
-
-  if (showLanding && !state.walletConnected) {
+  if (showLanding) {
     return (
       <>
         <LandingPage onLaunch={() => {
