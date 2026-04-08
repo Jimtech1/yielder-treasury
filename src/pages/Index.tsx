@@ -47,14 +47,14 @@ function AppShell() {
       case 'treasury': return <TreasuryView />;
       case 'portfolio': return <PortfolioView />;
       case 'kyc': return <KYCView />;
+      case 'transactions': return <TransactionsView />;
       case 'settings': return <SettingsView />;
-      default: return <DashboardView />;
     }
   };
 
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
-      <TopBar onWalletClick={() => setWalletModalOpen(true)} onLogoClick={() => setShowLanding(true)} />
+      <TopBar onWalletClick={() => setWalletModalOpen(true)} onLogoClick={() => setShowLanding(true)} onTabChange={setActiveTab} />
       <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
       <main className="flex-1 overflow-y-auto pt-16 pb-20 px-4">
         <div className="max-w-lg mx-auto py-4">
