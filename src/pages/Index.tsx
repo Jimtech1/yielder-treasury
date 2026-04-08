@@ -20,7 +20,6 @@ function AppShell() {
   const [activeTab, setActiveTab] = useState<TabId>('dashboard');
   const [walletModalOpen, setWalletModalOpen] = useState(false);
 
-  // Auto-transition when wallet connects
   React.useEffect(() => {
     if (state.walletConnected && showLanding) {
       setShowLanding(false);
@@ -60,11 +59,13 @@ function AppShell() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <TopBar onWalletClick={() => setWalletModalOpen(true)} />
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
+      <TopBar onWalletClick={() => setWalletModalOpen(true)} onLogoClick={() => setShowLanding(true)} />
       <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
-      <main className="pt-16 pb-24 px-4 max-w-lg mx-auto">
-        {renderTab()}
+      <main className="flex-1 overflow-y-auto pt-16 pb-20 px-4">
+        <div className="max-w-lg mx-auto py-4">
+          {renderTab()}
+        </div>
       </main>
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
     </div>

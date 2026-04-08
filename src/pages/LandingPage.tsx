@@ -1,5 +1,12 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import ParticleField from '@/components/ParticleField';
+import LandingTicker from '@/components/landing/LandingTicker';
+import LandingHowItWorks from '@/components/landing/LandingHowItWorks';
+import LandingFeatures from '@/components/landing/LandingFeatures';
+import LandingTenures from '@/components/landing/LandingTenures';
+import LandingTestimonials from '@/components/landing/LandingTestimonials';
+import LandingFooter from '@/components/landing/LandingFooter';
 
 interface LandingPageProps {
   onLaunch: () => void;
@@ -10,21 +17,6 @@ const TENURES = [
   { days: 180, apy: 17.5 },
   { days: 240, apy: 19.0 },
   { days: 365, apy: 23.0 },
-];
-
-const FEATURES = [
-  { icon: '💳', title: 'Fiat On/Off Ramp', desc: 'Deposit & withdraw NGN, USD, EUR seamlessly via MoneyGram anchors.' },
-  { icon: '🔄', title: 'Instant Swap', desc: 'Swap USDC ↔ NYLD, NGN, USD, EUR with zero slippage.' },
-  { icon: '🌉', title: 'CCTP Bridge', desc: 'Move USDC across Stellar, Ethereum & Solana via Circle CCTP V2.' },
-  { icon: '📈', title: 'T-Bill Tenures', desc: 'Earn 15–23% APY on tokenized Nigerian Treasury Bills.' },
-  { icon: '🔐', title: 'Privy Wallet', desc: 'Login with email or social — no seed phrase needed.' },
-  { icon: '✅', title: 'KYC Verified', desc: 'SEC-compliant verification for institutional-grade security.' },
-];
-
-const TESTIMONIALS = [
-  { name: 'Adebayo O.', role: 'Retail Investor', quote: 'Yielder made it incredibly easy to earn yield on my savings. The T-Bill tenure options are fantastic.' },
-  { name: 'Sarah K.', role: 'DeFi Enthusiast', quote: 'The CCTP bridge is seamless. Moving USDC between chains has never been this simple.' },
-  { name: 'FirstBank Digital', role: 'Institutional Partner', quote: 'We trust Yielder\'s infrastructure for our tokenized asset distribution.' },
 ];
 
 export default function LandingPage({ onLaunch }: LandingPageProps) {
@@ -45,6 +37,8 @@ export default function LandingPage({ onLaunch }: LandingPageProps) {
 
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center gradient-primary overflow-hidden pt-16">
+        {/* Particle canvas */}
+        <ParticleField />
         {/* Floating shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-[hsl(var(--yielder-purple)/0.2)] blur-3xl animate-float" />
@@ -110,102 +104,11 @@ export default function LandingPage({ onLaunch }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Live Ticker */}
-      <section className="py-3 bg-card border-b border-border overflow-hidden">
-        <div className="animate-ticker whitespace-nowrap flex gap-8 text-sm">
-          {[...Array(2)].map((_, i) => (
-            <React.Fragment key={i}>
-              <span className="text-muted-foreground">USDC <span className="text-foreground font-semibold">$1.00</span></span>
-              <span className="text-muted-foreground">NYLD <span className="text-foreground font-semibold">₦1,550</span></span>
-              {TENURES.map(t => (
-                <span key={t.days} className="text-muted-foreground">
-                  {t.days}d APY <span className="text-[hsl(var(--yielder-gold))] font-semibold">{t.apy}%</span>
-                </span>
-              ))}
-              <span className="text-muted-foreground mx-4">•</span>
-            </React.Fragment>
-          ))}
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-20 px-4">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">How It Works</h2>
-          <p className="text-muted-foreground mb-12 max-w-xl mx-auto">Start earning yield on tokenized Nigerian Treasury Bills in three simple steps.</p>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { step: '01', title: 'Deposit', desc: 'Fund with fiat (NGN, USD, EUR) or USDC via our secure on-ramp.' },
-              { step: '02', title: 'Choose Tenure', desc: 'Select a T-Bill tenure from 90 to 365 days with APY up to 23%.' },
-              { step: '03', title: 'Earn Yield', desc: 'Yield accrues daily in NYLD tokens. Redeem anytime.' },
-            ].map(item => (
-              <div key={item.step} className="glass-card p-8 rounded-2xl hover:scale-105 transition-transform">
-                <div className="text-5xl font-bold text-gradient mb-4">{item.step}</div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{item.title}</h3>
-                <p className="text-muted-foreground">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-20 px-4 bg-muted/30">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-12">Everything You Need</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FEATURES.map(f => (
-              <div key={f.title} className="glass-card p-6 rounded-2xl text-left hover:scale-105 transition-transform">
-                <div className="text-3xl mb-3">{f.icon}</div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">{f.title}</h3>
-                <p className="text-sm text-muted-foreground">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* T-Bill Tenures Preview */}
-      <section className="py-20 px-4">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">T-Bill Tenure Options</h2>
-          <p className="text-muted-foreground mb-12">Backed 1:1 by Nigerian Government Treasury Bills</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {TENURES.map(t => (
-              <div key={t.days} className="glass-card p-6 rounded-2xl border-2 border-transparent hover:border-[hsl(var(--yielder-gold)/0.5)] transition-all hover:scale-105 group">
-                <div className="text-sm text-muted-foreground mb-1">Tenure</div>
-                <div className="text-2xl font-bold text-foreground mb-3">{t.days} Days</div>
-                <div className="text-4xl font-bold text-gradient mb-3">{t.apy}%</div>
-                <div className="text-xs text-muted-foreground">APY</div>
-                <div className="mt-4 text-xs text-muted-foreground">
-                  Min. $10 USDC · Yield: ~${(100 * t.apy / 100 * t.days / 365).toFixed(2)} per $100
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20 px-4 bg-muted/30">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-12">Trusted by Thousands</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map(t => (
-              <div key={t.name} className="glass-card p-6 rounded-2xl text-left">
-                <p className="text-foreground mb-4 italic">"{t.quote}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full gradient-accent" />
-                  <div>
-                    <div className="font-semibold text-foreground text-sm">{t.name}</div>
-                    <div className="text-xs text-muted-foreground">{t.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <LandingTicker tenures={TENURES} />
+      <LandingHowItWorks />
+      <LandingFeatures />
+      <LandingTenures tenures={TENURES} />
+      <LandingTestimonials />
 
       {/* CTA */}
       <section className="py-20 px-4">
@@ -218,40 +121,7 @@ export default function LandingPage({ onLaunch }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 border-t border-border">
-        <div className="max-w-5xl mx-auto grid sm:grid-cols-4 gap-8 text-sm">
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-6 h-6 rounded-md gradient-accent" />
-              <span className="font-bold text-foreground">Yielder</span>
-            </div>
-            <p className="text-muted-foreground">The Nigerian Gateway to Global DeFi. Built on Stellar.</p>
-          </div>
-          {[
-            { title: 'Product', links: ['Dashboard', 'T-Bills', 'Bridge', 'Swap'] },
-            { title: 'Resources', links: ['Documentation', 'API', 'Support', 'Blog'] },
-            { title: 'Legal', links: ['Privacy Policy', 'Terms of Service', 'Compliance', 'KYC Policy'] },
-          ].map(col => (
-            <div key={col.title}>
-              <h4 className="font-semibold text-foreground mb-3">{col.title}</h4>
-              <ul className="space-y-2">
-                {col.links.map(l => (
-                  <li key={l}><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">{l}</a></li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="max-w-5xl mx-auto mt-8 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center text-xs text-muted-foreground">
-          <span>© 2026 Yielder. All rights reserved.</span>
-          <div className="flex gap-4 mt-4 sm:mt-0">
-            {['Twitter', 'Discord', 'Telegram', 'GitHub'].map(s => (
-              <a key={s} href="#" className="hover:text-foreground transition-colors">{s}</a>
-            ))}
-          </div>
-        </div>
-      </footer>
+      <LandingFooter />
     </div>
   );
 }
