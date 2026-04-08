@@ -1,12 +1,12 @@
 import React from 'react';
 import { useYielder } from '@/lib/AppContext';
-import { Button } from '@/components/ui/button';
 
 interface TopBarProps {
   onWalletClick: () => void;
+  onLogoClick?: () => void;
 }
 
-export default function TopBar({ onWalletClick }: TopBarProps) {
+export default function TopBar({ onWalletClick, onLogoClick }: TopBarProps) {
   const { state, updateState } = useYielder();
 
   const toggleTheme = () => {
@@ -16,10 +16,10 @@ export default function TopBar({ onWalletClick }: TopBarProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b">
       <div className="flex items-center justify-between px-4 py-3 max-w-lg mx-auto">
-        <div className="flex items-center gap-2">
+        <button onClick={onLogoClick} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <div className="w-7 h-7 rounded-lg gradient-accent flex items-center justify-center text-xs font-bold text-primary-foreground">Y</div>
           <span className="font-bold text-foreground text-sm">Yielder</span>
-        </div>
+        </button>
         <div className="flex items-center gap-3">
           <span className="text-xs font-semibold text-foreground">${state.usdcBalance.toFixed(2)}</span>
           <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground text-lg">
