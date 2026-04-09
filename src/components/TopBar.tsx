@@ -6,7 +6,7 @@ import { TABS, type TabId } from '@/components/BottomNav';
 interface TopBarProps {
   onWalletClick: () => void;
   onLogoClick?: () => void;
-  onTabChange?: (tab: TabId) => void;
+  onTabChange?: (tab: string) => void;
 }
 
 export default function TopBar({ onWalletClick, onLogoClick, onTabChange }: TopBarProps) {
