@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useYielder } from '@/lib/AppContext';
 import { Button } from '@/components/ui/button';
-import { addTransaction } from '@/lib/appState';
+import { addTransaction, addPlatformFee } from '@/lib/appState';
 
 /**
  * Bridge Module – Circle CCTP V2 Only
@@ -40,11 +40,14 @@ export default function BridgeView() {
     setTimeout(() => {
       updateState(prev => {
         const net = val - fee;
-        const updated = {
+        // 20% of bridge fee goes to platform pool for NYLD utility yield
+        const platformFeeContribution = fee * 0.2;
+        let updated = {
           ...prev,
           [chainKey(sourceChain)]: prev[chainKey(sourceChain)] - val,
           [chainKey(destChain)]: prev[chainKey(destChain)] + net,
         };
+        updated = addPlatformFee(updated, platformFeeContribution);
         return addTransaction(updated, 'bridge', `Bridged ${val} USDC: ${sourceChain} → ${destChain}`, val, 'USDC');
       });
       setBridging(false);

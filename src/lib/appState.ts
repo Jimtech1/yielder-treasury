@@ -21,7 +21,7 @@ export interface TBillPosition {
 
 export interface Transaction {
   id: string;
-  type: 'deposit' | 'withdraw' | 'swap' | 'bridge' | 'tbill_buy' | 'tbill_redeem';
+  type: 'deposit' | 'withdraw' | 'swap' | 'bridge' | 'tbill_buy' | 'tbill_redeem' | 'claim_utility_rewards';
   description: string;
   amount: number;
   asset: string;

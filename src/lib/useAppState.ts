@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { AppState, loadState, saveState, accrueYield } from './appState';
+import { AppState, loadState, saveState, accrueYield, accrueUtilityYield } from './appState';
 
 export function useAppState() {
   const [state, setState] = useState<AppState>(loadState);
@@ -9,13 +9,21 @@ export function useAppState() {
     saveState(state);
   }, [state]);
 
-  // Yield accrual timer
+  // Yield accrual timer (T-Bill interest + utility yield)
   useEffect(() => {
     const interval = setInterval(() => {
-      setState(prev => accrueYield(prev));
-    }, 60000); // every 60 seconds
+      setState(prev => {
+        let updated = accrueYield(prev);
+        updated = accrueUtilityYield(updated);
+        return updated;
+      });
+    }, 60000);
     // Initial accrual
-    setState(prev => accrueYield(prev));
+    setState(prev => {
+      let updated = accrueYield(prev);
+      updated = accrueUtilityYield(updated);
+      return updated;
+    });
     return () => clearInterval(interval);
   }, []);
 
