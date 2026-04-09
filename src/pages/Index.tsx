@@ -54,14 +54,14 @@ function AppShell() {
 
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
-      <TopBar onWalletClick={() => setWalletModalOpen(true)} onLogoClick={() => setShowLanding(true)} onTabChange={setActiveTab} />
+      <TopBar onWalletClick={() => setWalletModalOpen(true)} onLogoClick={() => setShowLanding(true)} onTabChange={(tab) => setActiveTab(tab)} />
       <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
       <main className="flex-1 overflow-y-auto pt-16 pb-20 px-4">
         <div className="max-w-lg mx-auto py-4">
           {renderTab()}
         </div>
       </main>
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <BottomNav activeTab={activeTab === 'settings' ? 'dashboard' : activeTab} onTabChange={setActiveTab} />
     </div>
   );
 }
