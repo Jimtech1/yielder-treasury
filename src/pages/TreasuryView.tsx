@@ -92,16 +92,13 @@ export default function TreasuryView() {
     updateState(prev => claimUtilityRewards(prev));
   };
 
-  // Calculate estimated utility APY based on pool and supply
-  const estimatedUtilityApy = state.platformFeePool > 0 && state.totalNyldSupply > 0
-    ? ((state.platformFeePool * 0.10 * 365) / state.totalNyldSupply) * 100 * state.usdcToNgn
-    : 2.3; // fallback mock
+  const estimatedUtilityApy = 3.0;
   const avgBaseApy = Object.values(state.apys).reduce((a, b) => a + b, 0) / Object.values(state.apys).length;
   const totalEstApy = avgBaseApy + estimatedUtilityApy;
 
   return (
     <div className="space-y-4 overflow-y-auto">
-      <h2 className="text-xl font-bold text-foreground">Treasury – T-Bills</h2>
+      <h2 className="text-xl font-bold text-foreground">Treasury</h2>
 
       {/* Dual Yield Breakdown */}
       <div className="glass-card p-4 rounded-xl space-y-2">

@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useYielder } from '@/lib/AppContext';
 import { Button } from '@/components/ui/button';
 import { resetState } from '@/lib/appState';
+import KYCView from './KYCView';
 
 export default function SettingsView() {
   const { state, updateState } = useYielder();
+  const [showKyc, setShowKyc] = useState(false);
+
+  if (showKyc) {
+    return (
+      <div className="space-y-4">
+        <button onClick={() => setShowKyc(false)} className="text-sm text-primary flex items-center gap-1">← Back to Settings</button>
+        <KYCView />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -28,6 +39,19 @@ export default function SettingsView() {
               {state.kycStatus === 'verified' ? '✅ Verified' : state.kycStatus === 'pending' ? '⏳ Pending' : '❌ Not Started'}
             </span>
           </div>
+        </div>
+      </div>
+
+      {/* KYC Verification */}
+      <div className="glass-card rounded-2xl p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">KYC Verification</h3>
+            <p className="text-xs text-muted-foreground">Verify your identity to unlock all features</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => setShowKyc(true)}>
+            {state.kycStatus === 'verified' ? 'View' : 'Start'}
+          </Button>
         </div>
       </div>
 

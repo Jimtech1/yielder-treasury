@@ -38,9 +38,7 @@ export default function DashboardView() {
 
   // Estimated dual yield APY
   const avgBaseApy = Object.values(state.apys).reduce((a, b) => a + b, 0) / Object.values(state.apys).length;
-  const utilityApy = state.platformFeePool > 0 && state.totalNyldSupply > 0
-    ? ((state.platformFeePool * 0.10 * 365) / state.totalNyldSupply) * 100 * state.usdcToNgn
-    : 2.3;
+  const utilityApy = 3.0;
   const totalDualApy = avgBaseApy + utilityApy;
 
   const cards = [

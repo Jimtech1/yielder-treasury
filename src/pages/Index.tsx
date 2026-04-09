@@ -7,17 +7,18 @@ import SwapView from './SwapView';
 import BridgeView from './BridgeView';
 import TreasuryView from './TreasuryView';
 import PortfolioView from './PortfolioView';
-import KYCView from './KYCView';
 import SettingsView from './SettingsView';
 import TransactionsView from './TransactionsView';
 import BottomNav, { TabId } from '@/components/BottomNav';
 import TopBar from '@/components/TopBar';
 import WalletModal from '@/components/WalletModal';
 
+type AppTab = TabId | 'settings';
+
 function AppShell() {
   const { state } = useYielder();
   const [showLanding, setShowLanding] = useState(!state.walletConnected);
-  const [activeTab, setActiveTab] = useState<TabId>('dashboard');
+  const [activeTab, setActiveTab] = useState<AppTab>('dashboard');
   const [walletModalOpen, setWalletModalOpen] = useState(false);
 
   if (showLanding) {
@@ -46,7 +47,6 @@ function AppShell() {
       case 'bridge': return <BridgeView />;
       case 'treasury': return <TreasuryView />;
       case 'portfolio': return <PortfolioView />;
-      case 'kyc': return <KYCView />;
       case 'transactions': return <TransactionsView />;
       case 'settings': return <SettingsView />;
     }
@@ -54,14 +54,14 @@ function AppShell() {
 
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
-      <TopBar onWalletClick={() => setWalletModalOpen(true)} onLogoClick={() => setShowLanding(true)} onTabChange={setActiveTab} />
+      <TopBar onWalletClick={() => setWalletModalOpen(true)} onLogoClick={() => setShowLanding(true)} onTabChange={(tab) => setActiveTab(tab as AppTab)} />
       <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
       <main className="flex-1 overflow-y-auto pt-16 pb-20 px-4">
         <div className="max-w-lg mx-auto py-4">
           {renderTab()}
         </div>
       </main>
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <BottomNav activeTab={activeTab === 'settings' ? 'dashboard' : activeTab} onTabChange={setActiveTab} />
     </div>
   );
 }
