@@ -36,11 +36,18 @@ export default function DashboardView() {
     }],
   };
 
+  // Estimated dual yield APY
+  const avgBaseApy = Object.values(state.apys).reduce((a, b) => a + b, 0) / Object.values(state.apys).length;
+  const utilityApy = state.platformFeePool > 0 && state.totalNyldSupply > 0
+    ? ((state.platformFeePool * 0.10 * 365) / state.totalNyldSupply) * 100 * state.usdcToNgn
+    : 2.3;
+  const totalDualApy = avgBaseApy + utilityApy;
+
   const cards = [
     { label: 'USDC Balance', value: `$${state.usdcBalance.toFixed(2)}`, color: 'gradient-accent' },
     { label: 'NYLD Balance', value: `₦${state.nyldBalance.toFixed(2)}`, color: 'gradient-gold' },
     { label: 'Yield Earned', value: `₦${state.totalYieldEarned.toFixed(2)}`, color: 'gradient-primary' },
-    { label: 'Best APY', value: `${bestApy}%`, color: 'gradient-accent' },
+    { label: 'NYLD Total APY', value: `${totalDualApy.toFixed(1)}%`, color: 'gradient-accent' },
   ];
 
   return (
@@ -54,6 +61,17 @@ export default function DashboardView() {
           </div>
         ))}
       </div>
+
+      {/* Utility Rewards Summary */}
+      {state.utilityRewards > 0 && (
+        <div className="glass-card rounded-2xl p-3 flex items-center justify-between">
+          <div>
+            <div className="text-[10px] text-muted-foreground">Unclaimed Utility Rewards</div>
+            <div className="text-sm font-bold text-foreground">${state.utilityRewards.toFixed(4)} USDC</div>
+          </div>
+          <div className="text-[10px] text-[hsl(var(--yielder-gold))]">Claim in Treasury →</div>
+        </div>
+      )}
 
       {/* Chart */}
       <div className="glass-card rounded-2xl p-4">

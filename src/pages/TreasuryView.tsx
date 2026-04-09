@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useYielder } from '@/lib/AppContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { addTransaction, TBillPosition } from '@/lib/appState';
+import { addTransaction, TBillPosition, claimUtilityRewards } from '@/lib/appState';
 import TreasuryPositions from '@/components/treasury/TreasuryPositions';
 
 /**
@@ -88,9 +88,60 @@ export default function TreasuryView() {
     setRedeemId(null);
   };
 
+  const handleClaimRewards = () => {
+    updateState(prev => claimUtilityRewards(prev));
+  };
+
+  // Calculate estimated utility APY based on pool and supply
+  const estimatedUtilityApy = state.platformFeePool > 0 && state.totalNyldSupply > 0
+    ? ((state.platformFeePool * 0.10 * 365) / state.totalNyldSupply) * 100 * state.usdcToNgn
+    : 2.3; // fallback mock
+  const avgBaseApy = Object.values(state.apys).reduce((a, b) => a + b, 0) / Object.values(state.apys).length;
+  const totalEstApy = avgBaseApy + estimatedUtilityApy;
+
   return (
     <div className="space-y-4 overflow-y-auto">
       <h2 className="text-xl font-bold text-foreground">Treasury – T-Bills</h2>
+
+      {/* Dual Yield Breakdown */}
+      <div className="glass-card p-4 rounded-xl space-y-2">
+        <h3 className="text-sm font-semibold text-foreground">🔥 Dual Yield on NYLD</h3>
+        <div className="grid grid-cols-3 gap-2 text-center">
+          <div>
+            <div className="text-[10px] text-muted-foreground">T-Bill Yield</div>
+            <div className="text-lg font-bold text-foreground">{avgBaseApy.toFixed(1)}%</div>
+            <div className="text-[9px] text-muted-foreground">Base APY</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-muted-foreground">Utility Yield</div>
+            <div className="text-lg font-bold text-[hsl(var(--yielder-gold))]">+{estimatedUtilityApy.toFixed(1)}%</div>
+            <div className="text-[9px] text-muted-foreground">Platform Fees</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-muted-foreground">Total APY</div>
+            <div className="text-lg font-bold text-gradient">{totalEstApy.toFixed(1)}%</div>
+            <div className="text-[9px] text-muted-foreground">Combined</div>
+          </div>
+        </div>
+        <p className="text-[10px] text-muted-foreground">Hold NYLD to automatically earn a share of swap & bridge fees — no staking required.</p>
+      </div>
+
+      {/* Utility Rewards & Claim */}
+      <div className="glass-card p-3 rounded-xl flex items-center justify-between">
+        <div>
+          <div className="text-xs text-muted-foreground">Unclaimed Utility Rewards</div>
+          <div className="text-lg font-bold text-foreground">${state.utilityRewards.toFixed(4)} <span className="text-xs text-muted-foreground">USDC</span></div>
+        </div>
+        <Button size="sm" onClick={handleClaimRewards} disabled={state.utilityRewards <= 0} className="gradient-accent text-primary-foreground text-xs">
+          Claim
+        </Button>
+      </div>
+
+      {/* Fee Pool Info */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+        <span>Platform Fee Pool: ${state.platformFeePool.toFixed(2)} USDC</span>
+        <span>Total NYLD Supply: ₦{state.totalNyldSupply.toLocaleString()}</span>
+      </div>
 
       {/* Mint NYLD Banner */}
       <div className="glass-card p-3 rounded-xl flex items-center justify-between">

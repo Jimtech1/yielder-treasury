@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useYielder } from '@/lib/AppContext';
 import { Button } from '@/components/ui/button';
-import { addTransaction } from '@/lib/appState';
+import { addTransaction, addPlatformFee } from '@/lib/appState';
 
 /**
  * Swap Module
@@ -53,6 +53,9 @@ export default function SwapView() {
     setTimeout(() => {
       updateState(prev => {
         let updated = { ...prev };
+        // Swap fee: 0.1% of amount; 20% of fee goes to platform pool
+        const swapFee = val * 0.001;
+        const platformFeeContribution = swapFee * 0.2; // 0.02% of swap to fee pool
         // Deduct from
         switch (fromAsset) {
           case 'USDC': updated.usdcBalance -= val; updated.stellarUsdc -= val; break;
@@ -70,6 +73,8 @@ export default function SwapView() {
           case 'USD': updated.fiatBalances = { ...updated.fiatBalances, usd: (updated.fiatBalances.usd || 0) + out }; break;
           case 'EUR': updated.fiatBalances = { ...updated.fiatBalances, eur: (updated.fiatBalances.eur || 0) + out }; break;
         }
+        // Add fee to platform pool
+        updated = addPlatformFee(updated, platformFeeContribution);
         return addTransaction(updated, 'swap', `Swapped ${val} ${fromAsset} → ${out.toFixed(2)} ${toAsset}`, val, fromAsset);
       });
       setAmount('');
