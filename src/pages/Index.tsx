@@ -46,7 +46,6 @@ function AppShell() {
       case 'bridge': return <BridgeView />;
       case 'treasury': return <TreasuryView />;
       case 'portfolio': return <PortfolioView />;
-      case 'kyc': return <KYCView />;
       case 'transactions': return <TransactionsView />;
       case 'settings': return <SettingsView />;
     }

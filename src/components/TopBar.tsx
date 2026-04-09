@@ -28,10 +28,10 @@ export default function TopBar({ onWalletClick, onLogoClick, onTabChange }: TopB
               <span className="font-bold text-foreground text-sm">Yielder</span>
             </button>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-foreground">${state.usdcBalance.toFixed(2)}</span>
-            <button onClick={toggleTheme} className="text-muted-foreground hover:text-foreground text-lg">
-              {state.theme === 'dark' ? '☀️' : '🌙'}
+            <button onClick={() => onTabChange?.('settings' as any)} className="text-muted-foreground hover:text-foreground text-lg">
+              ⚙️
             </button>
             <button onClick={onWalletClick} className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
               {state.walletConnected ? (
