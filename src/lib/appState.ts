@@ -51,6 +51,14 @@ export interface AppState {
   theme: 'light' | 'dark';
   defaultCurrency: string;
   notifications: boolean;
+  /** Dual yield: accumulated platform fees (USDC) to distribute to NYLD holders */
+  platformFeePool: number;
+  /** Simulated total NYLD supply across all users (for proportional distribution) */
+  totalNyldSupply: number;
+  /** User's unclaimed utility yield rewards (in USDC) */
+  utilityRewards: number;
+  /** Timestamp of last utility yield distribution */
+  lastUtilityUpdate: number;
 }
 
 const DEFAULT_STATE: AppState = {
@@ -75,6 +83,10 @@ const DEFAULT_STATE: AppState = {
   theme: 'dark',
   defaultCurrency: 'USD',
   notifications: true,
+  platformFeePool: 50, // Start with 50 USDC for demo
+  totalNyldSupply: 5000000, // Simulated global NYLD supply (₦5M)
+  utilityRewards: 0,
+  lastUtilityUpdate: Date.now(),
 };
 
 const STORAGE_KEY = 'yielder_state';
@@ -142,6 +154,58 @@ export function accrueYield(state: AppState): AppState {
     totalYieldEarned: state.totalYieldEarned + totalNewYield,
     lastYieldUpdate: now,
   };
+}
+
+/**
+ * Utility yield accrual: distributes a share of platformFeePool to NYLD holders.
+ * In production, this would be handled by a smart contract that distributes
+ * a portion of platform fees to NYLD holders proportionally via rebasing or a rewards pool.
+ * Utility yield is earned as USDC (keeps NYLD 1:1 NGN peg clean).
+ */
+export function accrueUtilityYield(state: AppState): AppState {
+  const now = Date.now();
+  const elapsed = (now - state.lastUtilityUpdate) / 1000;
+  if (elapsed < 10 || state.nyldBalance <= 0 || state.platformFeePool <= 0) return state;
+
+  // User's share of total supply, distributed over 24h cycle
+  const userShare = state.nyldBalance / state.totalNyldSupply;
+  const dailyFraction = elapsed / 86400;
+  // Distribute up to 10% of pool per day to all holders
+  const poolDistribution = state.platformFeePool * 0.10 * dailyFraction;
+  const userReward = poolDistribution * userShare;
+
+  return {
+    ...state,
+    utilityRewards: state.utilityRewards + userReward,
+    platformFeePool: state.platformFeePool - userReward,
+    lastUtilityUpdate: now,
+  };
+}
+
+/**
+ * Add platform fee from swap/bridge to the fee pool.
+ * In production, fees would be collected by a smart contract on Stellar/Soroban.
+ */
+export function addPlatformFee(state: AppState, feeUsdc: number): AppState {
+  return {
+    ...state,
+    platformFeePool: state.platformFeePool + feeUsdc,
+  };
+}
+
+/**
+ * Claim utility rewards: transfers accumulated USDC rewards to user's USDC balance.
+ */
+export function claimUtilityRewards(state: AppState): AppState {
+  if (state.utilityRewards <= 0) return state;
+  const rewards = state.utilityRewards;
+  let updated = {
+    ...state,
+    usdcBalance: state.usdcBalance + rewards,
+    stellarUsdc: state.stellarUsdc + rewards,
+    utilityRewards: 0,
+  };
+  return addTransaction(updated, 'claim_utility_rewards' as Transaction['type'], `Claimed utility rewards: $${rewards.toFixed(4)} USDC`, rewards, 'USDC');
 }
 
 export function generateMockAddress(type: 'privy' | 'stellar'): string {
