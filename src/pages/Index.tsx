@@ -7,17 +7,18 @@ import SwapView from './SwapView';
 import BridgeView from './BridgeView';
 import TreasuryView from './TreasuryView';
 import PortfolioView from './PortfolioView';
-import KYCView from './KYCView';
 import SettingsView from './SettingsView';
 import TransactionsView from './TransactionsView';
 import BottomNav, { TabId } from '@/components/BottomNav';
 import TopBar from '@/components/TopBar';
 import WalletModal from '@/components/WalletModal';
 
+type AppTab = TabId | 'settings';
+
 function AppShell() {
   const { state } = useYielder();
   const [showLanding, setShowLanding] = useState(!state.walletConnected);
-  const [activeTab, setActiveTab] = useState<TabId>('dashboard');
+  const [activeTab, setActiveTab] = useState<AppTab>('dashboard');
   const [walletModalOpen, setWalletModalOpen] = useState(false);
 
   if (showLanding) {
