@@ -62,6 +62,17 @@ export default function DashboardView() {
         ))}
       </div>
 
+      {/* Utility Rewards Summary */}
+      {state.utilityRewards > 0 && (
+        <div className="glass-card rounded-2xl p-3 flex items-center justify-between">
+          <div>
+            <div className="text-[10px] text-muted-foreground">Unclaimed Utility Rewards</div>
+            <div className="text-sm font-bold text-foreground">${state.utilityRewards.toFixed(4)} USDC</div>
+          </div>
+          <div className="text-[10px] text-[hsl(var(--yielder-gold))]">Claim in Treasury →</div>
+        </div>
+      )}
+
       {/* Chart */}
       <div className="glass-card rounded-2xl p-4">
         <h3 className="text-sm font-semibold text-foreground mb-3">Portfolio (7 Days)</h3>
