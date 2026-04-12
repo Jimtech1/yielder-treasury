@@ -3,8 +3,7 @@ import { useYielder } from '@/lib/AppContext';
 import LandingPage from './LandingPage';
 import DashboardView from './DashboardView';
 import RampView from './RampView';
-import SwapView from './SwapView';
-import BridgeView from './BridgeView';
+import SecondaryMarketView from './SecondaryMarketView';
 import TreasuryView from './TreasuryView';
 import PortfolioView from './PortfolioView';
 import SettingsView from './SettingsView';
@@ -43,8 +42,7 @@ function AppShell() {
     switch (activeTab) {
       case 'dashboard': return <DashboardView />;
       case 'ramp': return <RampView />;
-      case 'swap': return <SwapView />;
-      case 'bridge': return <BridgeView />;
+      case 'market': return <SecondaryMarketView />;
       case 'treasury': return <TreasuryView />;
       case 'portfolio': return <PortfolioView />;
       case 'transactions': return <TransactionsView />;

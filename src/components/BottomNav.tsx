@@ -1,12 +1,10 @@
 import React from 'react';
-import { useYielder } from '@/lib/AppContext';
 
 const TABS = [
   { id: 'dashboard', icon: '📊', label: 'Home' },
   { id: 'ramp', icon: '💳', label: 'Ramp' },
-  { id: 'swap', icon: '🔄', label: 'Swap' },
-  { id: 'bridge', icon: '🌉', label: 'Bridge' },
-  { id: 'treasury', icon: '📈', label: 'Treasury' },
+  { id: 'market', icon: '📈', label: 'Market' },
+  { id: 'treasury', icon: '🏦', label: 'Treasury' },
   { id: 'portfolio', icon: '💼', label: 'Portfolio' },
   { id: 'transactions', icon: '📋', label: 'History' },
 ] as const;
@@ -21,7 +19,7 @@ interface BottomNavProps {
 export default function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 glass-card border-t safe-area-bottom">
-      <div className="flex justify-around items-center py-1 px-1 max-w-lg mx-auto overflow-x-auto">
+      <div className="flex justify-around items-center py-1 px-1 max-w-lg mx-auto">
         {TABS.map(tab => (
           <button
             key={tab.id}

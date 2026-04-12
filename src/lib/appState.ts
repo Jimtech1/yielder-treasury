@@ -14,14 +14,58 @@ export interface TBillPosition {
   amountNYLD: number;
   tenureDays: number;
   apy: number;
-  purchaseDate: number; // timestamp
-  maturityDate: number; // timestamp
-  accruedYield: number; // in NYLD
+  purchaseDate: number;
+  maturityDate: number;
+  accruedYield: number;
+}
+
+export interface CommercialPaperToken {
+  id: string;
+  issuer: string;
+  tenureDays: number;
+  apy: number;
+  amountUSDC: number;
+  purchaseDate: number;
+  maturityDate: number;
+  accruedYield: number;
+}
+
+export interface OtherProduct {
+  id: string;
+  name: string;
+  type: string;
+  tenureDays: number;
+  apy: number;
+  amountUSDC: number;
+  purchaseDate: number;
+  maturityDate: number;
+  accruedYield: number;
+}
+
+export interface OpenOrder {
+  id: string;
+  asset: string;
+  side: 'buy' | 'sell';
+  orderType: 'limit' | 'market';
+  price: number;
+  quantity: number;
+  filled: number;
+  timestamp: number;
+}
+
+export interface TradeRecord {
+  id: string;
+  date: number;
+  asset: string;
+  side: 'buy' | 'sell';
+  price: number;
+  quantity: number;
+  total: number;
 }
 
 export interface Transaction {
   id: string;
-  type: 'deposit' | 'withdraw' | 'swap' | 'bridge' | 'tbill_buy' | 'tbill_redeem' | 'claim_utility_rewards';
+  type: 'deposit' | 'withdraw' | 'swap' | 'bridge' | 'tbill_buy' | 'tbill_redeem' | 'claim_utility_rewards' | 'cp_buy' | 'product_buy' | 'trade';
   description: string;
   amount: number;
   asset: string;
@@ -51,14 +95,14 @@ export interface AppState {
   theme: 'light' | 'dark';
   defaultCurrency: string;
   notifications: boolean;
-  /** Dual yield: accumulated platform fees (USDC) to distribute to NYLD holders */
   platformFeePool: number;
-  /** Simulated total NYLD supply across all users (for proportional distribution) */
   totalNyldSupply: number;
-  /** User's unclaimed utility yield rewards (in USDC) */
   utilityRewards: number;
-  /** Timestamp of last utility yield distribution */
   lastUtilityUpdate: number;
+  commercialPaperTokens: CommercialPaperToken[];
+  otherProducts: OtherProduct[];
+  openOrders: OpenOrder[];
+  tradeHistory: TradeRecord[];
 }
 
 const DEFAULT_STATE: AppState = {
@@ -83,10 +127,14 @@ const DEFAULT_STATE: AppState = {
   theme: 'dark',
   defaultCurrency: 'USD',
   notifications: true,
-  platformFeePool: 50, // Start with 50 USDC for demo
-  totalNyldSupply: 5000000, // Simulated global NYLD supply (₦5M)
+  platformFeePool: 50,
+  totalNyldSupply: 5000000,
   utilityRewards: 0,
   lastUtilityUpdate: Date.now(),
+  commercialPaperTokens: [],
+  otherProducts: [],
+  openOrders: [],
+  tradeHistory: [],
 };
 
 const STORAGE_KEY = 'yielder_state';
@@ -129,14 +177,10 @@ export function addTransaction(
   return { ...state, transactions: [tx, ...state.transactions] };
 }
 
-/**
- * Yield accrual: iterates T-Bill positions, calculates yield based on APY and elapsed time.
- * In production, yield would come from on-chain token balance (NYLD rebasing or claim).
- */
 export function accrueYield(state: AppState): AppState {
   const now = Date.now();
-  const elapsed = (now - state.lastYieldUpdate) / 1000; // seconds
-  if (elapsed < 10) return state; // min 10s between accruals
+  const elapsed = (now - state.lastYieldUpdate) / 1000;
+  if (elapsed < 10) return state;
 
   let totalNewYield = 0;
   const updatedPositions = state.tBillPositions.map(pos => {
@@ -156,21 +200,13 @@ export function accrueYield(state: AppState): AppState {
   };
 }
 
-/**
- * Utility yield accrual: distributes a share of platformFeePool to NYLD holders.
- * In production, this would be handled by a smart contract that distributes
- * a portion of platform fees to NYLD holders proportionally via rebasing or a rewards pool.
- * Utility yield is earned as USDC (keeps NYLD 1:1 NGN peg clean).
- */
 export function accrueUtilityYield(state: AppState): AppState {
   const now = Date.now();
   const elapsed = (now - state.lastUtilityUpdate) / 1000;
   if (elapsed < 10 || state.nyldBalance <= 0 || state.platformFeePool <= 0) return state;
 
-  // User's share of total supply, distributed over 24h cycle
   const userShare = state.nyldBalance / state.totalNyldSupply;
   const dailyFraction = elapsed / 86400;
-  // Distribute up to 10% of pool per day to all holders
   const poolDistribution = state.platformFeePool * 0.10 * dailyFraction;
   const userReward = poolDistribution * userShare;
 
@@ -182,10 +218,6 @@ export function accrueUtilityYield(state: AppState): AppState {
   };
 }
 
-/**
- * Add platform fee from swap/bridge to the fee pool.
- * In production, fees would be collected by a smart contract on Stellar/Soroban.
- */
 export function addPlatformFee(state: AppState, feeUsdc: number): AppState {
   return {
     ...state,
@@ -193,9 +225,6 @@ export function addPlatformFee(state: AppState, feeUsdc: number): AppState {
   };
 }
 
-/**
- * Claim utility rewards: transfers accumulated USDC rewards to user's USDC balance.
- */
 export function claimUtilityRewards(state: AppState): AppState {
   if (state.utilityRewards <= 0) return state;
   const rewards = state.utilityRewards;
@@ -205,7 +234,7 @@ export function claimUtilityRewards(state: AppState): AppState {
     stellarUsdc: state.stellarUsdc + rewards,
     utilityRewards: 0,
   };
-  return addTransaction(updated, 'claim_utility_rewards' as Transaction['type'], `Claimed utility rewards: $${rewards.toFixed(4)} USDC`, rewards, 'USDC');
+  return addTransaction(updated, 'claim_utility_rewards', `Claimed utility rewards: $${rewards.toFixed(4)} USDC`, rewards, 'USDC');
 }
 
 export function generateMockAddress(type: 'privy' | 'stellar'): string {
@@ -213,4 +242,14 @@ export function generateMockAddress(type: 'privy' | 'stellar'): string {
   let addr = '';
   for (let i = 0; i < 40; i++) addr += chars[Math.floor(Math.random() * chars.length)];
   return type === 'stellar' ? 'G' + addr.substring(0, 55) : '0x' + addr;
+}
+
+/** All tradable assets on the secondary market */
+export function getTradableAssets(state: AppState): string[] {
+  const assets = ['NYLD'];
+  const cpIssuers = new Set(state.commercialPaperTokens.map(cp => `CP-${cp.issuer}`));
+  cpIssuers.forEach(a => assets.push(a));
+  const otherNames = new Set(state.otherProducts.map(p => `BOND-${p.name}`));
+  otherNames.forEach(a => assets.push(a));
+  return assets;
 }
