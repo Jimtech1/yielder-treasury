@@ -1,89 +1,42 @@
-# Yielder – Complete Frontend Build Plan
 
-## Overview
 
-Build a Stellar-based financial dashboard with a stunning landing page, wallet connection (Privy + Stellar), fiat on/off ramp, swap, CCTP bridge, tokenized T-Bill tenures, portfolio, KYC, and settings. All interactions are frontend simulations with localStorage persistence.
+# Plan: Remove Bridge, Add Stellar Anchor, Update Landing Page with Hero Slider
 
-## Phase 1: Foundation & Landing Page
+## Summary
 
-### Design System
+Remove the Bridge feature entirely, add Stellar Anchor as the deposit/withdrawal method for USDC, USD, and EUR (keeping Paydots for NGN), update the landing page features to reflect the new capabilities, and implement an auto-sliding hero section that cycles through feature slides.
 
-- Custom CSS variables: deep navy/purple gradients, gold accents, glassmorphism tokens
-- Dark/light mode toggle support
-- Mobile-first responsive breakpoints
+## Changes
 
-### Landing Page (Long-Form)
+### 1. Remove Bridge Feature
+- **`src/pages/BridgeView.tsx`** -- Delete this file
+- **`src/pages/Index.tsx`** -- Remove BridgeView import, remove `'bridge'` from AppTab type and renderTab switch
+- **`src/components/TopBar.tsx`** -- Remove Bridge from EXTRA_MENU_ITEMS
+- **`src/lib/appState.ts`** -- Remove `ethereumUsdc` and `solanaUsdc` from AppState, keep `stellarUsdc`. Remove bridge-related transaction type references
 
-- **Hero:** Full-width gradient with floating animated shapes, headline "The Nigerian Gateway to Global DeFi", CTA "Launch App"
-- **Trust Badges:** Stellar, Circle, Etherfuse, Privy, MoneyGram logos
-- **Live Ticker:** Scrolling prices (USDC, NYLD, APYs per tenure)
-- **How It Works:** 3-step visual flow
-- **Features Grid:** 6 cards with icons (Ramp, Swap, Bridge, T-Bills, Privy, KYC)
-- **App Mockups:** Styled device frames showing dashboard screens
-- **Testimonials:** Placeholder user quotes
-- **Footer:** Links, social icons
+### 2. Add Stellar Anchor for USDC/USD/EUR Deposits & Withdrawals
+- **`src/pages/RampView.tsx`** -- When currency is USD, EUR, or USDC, show "Stellar Anchor" as the payment method (similar to how Paydots is shown for NGN). Add a Stellar Anchor modal with simulated SEP-24 interactive flow for deposits/withdrawals. Display Stellar Anchor branding and explain the process. Keep Paydots for NGN only.
 
-## Phase 2: App Shell & Navigation
+### 3. Update Landing Page Features
+- **`src/components/landing/LandingFeatures.tsx`** -- Replace "CCTP Bridge" feature card with "Stellar Anchor" (deposit/withdraw USDC, USD, EUR via Stellar anchors). Update descriptions to match current feature set.
+- **`src/pages/LandingPage.tsx`** -- Update hero subtitle text to remove "Bridge" and add "Stellar Anchor". Update trust badges if needed.
 
-- Bottom navigation bar (8 tabs: Dashboard, Ramp, Swap, Bridge, Treasury, Portfolio, KYC, Settings)
-- Top bar with wallet indicator, USDC balance, logo, theme toggle
-- Central `appState` stored in localStorage with all balances, positions, rates, transactions
-- Yield accrual timer (every 60 seconds, iterates T-Bill positions)
+### 4. Hero Section Slider (No New Component)
+- **`src/pages/LandingPage.tsx`** -- Replace the static hero content with a sliding content system:
+  - Define 3-4 slides (e.g., "DeFi Gateway", "Earn 23% APY", "Stellar Anchor Ramp", "Trade Tokenized Assets")
+  - Use `useState` for active slide index and `useEffect` with `setInterval` (5s) to auto-advance
+  - Use CSS `transition` and `opacity`/`transform` to animate between slides
+  - Add dot indicators at the bottom for manual slide selection
+  - Each slide has its own headline, subtitle, and badge text
+  - The phone mockup and CTA buttons remain static below the sliding text
 
-## Phase 3: Wallet Connection
+### 5. Landing Page Sections Update
+- **`src/components/landing/LandingHowItWorks.tsx`** -- Minor text updates to remove bridge references
 
-- Modal with two options: "Continue with Privy" (email/social) and "Connect Stellar Wallet" (Freighter/Albedo)
-- Mock authentication flow, generates wallet address
-- Stores `walletType` in state
+## Technical Details
 
-## Phase 4: Feature Modules
+- Hero slider uses pure React state + CSS transitions (opacity + translateX), no external library
+- Stellar Anchor modal reuses the existing Dialog component pattern from Paydots
+- Bridge-related state fields (`ethereumUsdc`, `solanaUsdc`) removed; only `stellarUsdc` retained
+- `addPlatformFee` calls in BridgeView are removed (swap fees remain as the fee source)
 
-### On/Off Ramp
-
-- Currency selector (NGN, USD, EUR, USDC), Deposit/Withdraw tabs
-- Mock anchor flow, updates balances and transaction history
-
-### Swap
-
-- From/To asset selectors, mock exchange rates (1 USDC = 1,550 NGN, etc.)
-- Swap button updates balances, records transaction
-
-### Bridge (CCTP V2)
-
-- Source/Destination chain selector (Stellar, Ethereum, Solana)
-- USDC only, mock fee (0.05%), ~30s estimate
-- Moves USDC between chain balances
-
-### Treasury – T-Bill Tenures
-
-- Grid of 4 product cards (90d/15%, 180d/17.5%, 240d/19%, 365d/23%)
-- Each shows tenure, APY, min investment, estimated yield
-- Purchase modal: enter NYLD amount → confirm → creates position
-- Active positions list with maturity date, accrued yield, redeem button
-- Early redemption penalty: 50% of accrued yield forfeited
-
-### Portfolio
-
-- Asset list (USDC, NYLD total, individual T-Bill positions)
-- Pie chart (Chart.js) showing allocation
-
-### KYC
-
-- Multi-step form (name, ID, selfie), mock verification status
-
-### Transaction History
-
-- Filterable/searchable table of all transactions
-
-### Settings
-
-- Profile, theme, default currency, wallet management, notifications
-
-## Phase 5: Data Integration & Polish
-
-- All modules share central state; buying T-Bills updates portfolio, balances, history
-- Chart.js line chart on dashboard (7-day portfolio value)
-- Swipeable summary cards on dashboard
-- Scroll animations (fade-in), button pulses, card hover effects
-- Glassmorphism styling throughout
-- Code comments explaining real SDK integration points (Privy, Circle CCTP V2, Stellar SDK, SEP-24, SEP-12)
