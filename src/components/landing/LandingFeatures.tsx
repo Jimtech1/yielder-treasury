@@ -1,11 +1,11 @@
 import React from 'react';
 
 const FEATURES = [
-  { icon: '💳', title: 'Fiat On/Off Ramp', desc: 'Deposit & withdraw NGN, USD, EUR seamlessly via MoneyGram anchors.' },
+  { icon: '💳', title: 'Fiat On/Off Ramp', desc: 'Deposit & withdraw NGN via Paydots MFB. USD, EUR, USDC via Stellar Anchors.' },
   { icon: '🔄', title: 'Instant Swap', desc: 'Swap USDC ↔ NYLD, NGN, USD, EUR with zero slippage.' },
-  { icon: '🌉', title: 'CCTP Bridge', desc: 'Move USDC across Stellar, Ethereum & Solana via Circle CCTP V2.' },
-  { icon: '📈', title: 'T-Bill Tenures', desc: 'Earn 15–23% APY on tokenized Nigerian Treasury Bills.' },
-  { icon: '🔐', title: 'Privy Wallet', desc: 'Login with email or social — no seed phrase needed.' },
+  { icon: '⭐', title: 'Stellar Anchor', desc: 'Deposit & withdraw USDC, USD, EUR through Stellar SEP-24 interactive anchors.' },
+  { icon: '📈', title: 'Treasury Products', desc: 'T-Bills, Commercial Paper & Bonds — earn 12–23% APY on tokenized assets.' },
+  { icon: '📊', title: 'Secondary Market', desc: 'Trade tokenized assets with live order books and charts.' },
   { icon: '✅', title: 'KYC Verified', desc: 'SEC-compliant verification for institutional-grade security.' },
 ];
 

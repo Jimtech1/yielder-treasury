@@ -65,7 +65,7 @@ export interface TradeRecord {
 
 export interface Transaction {
   id: string;
-  type: 'deposit' | 'withdraw' | 'swap' | 'bridge' | 'tbill_buy' | 'tbill_redeem' | 'claim_utility_rewards' | 'cp_buy' | 'product_buy' | 'trade';
+  type: 'deposit' | 'withdraw' | 'swap' | 'tbill_buy' | 'tbill_redeem' | 'claim_utility_rewards' | 'cp_buy' | 'product_buy' | 'trade';
   description: string;
   amount: number;
   asset: string;
@@ -84,8 +84,6 @@ export interface AppState {
   walletType: 'privy' | 'stellar' | null;
   walletAddress: string;
   stellarUsdc: number;
-  ethereumUsdc: number;
-  solanaUsdc: number;
   tBillPositions: TBillPosition[];
   usdcToNgn: number;
   usdToNgn: number;
@@ -116,8 +114,6 @@ const DEFAULT_STATE: AppState = {
   walletType: null,
   walletAddress: '',
   stellarUsdc: 1250,
-  ethereumUsdc: 0,
-  solanaUsdc: 0,
   tBillPositions: [],
   usdcToNgn: 1550,
   usdToNgn: 1550,

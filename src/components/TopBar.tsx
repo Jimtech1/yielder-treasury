@@ -11,7 +11,6 @@ interface TopBarProps {
 
 const EXTRA_MENU_ITEMS = [
   { id: 'transactions', icon: '📋', label: 'Transaction History' },
-  { id: 'bridge', icon: '🌉', label: 'Bridge (CCTP)' },
   { id: 'settings', icon: '⚙️', label: 'Settings' },
 ];
 

@@ -9,12 +9,12 @@ import TreasuryView from './TreasuryView';
 import PortfolioView from './PortfolioView';
 import SettingsView from './SettingsView';
 import TransactionsView from './TransactionsView';
-import BridgeView from './BridgeView';
+
 import BottomNav, { TabId } from '@/components/BottomNav';
 import TopBar from '@/components/TopBar';
 import WalletModal from '@/components/WalletModal';
 
-type AppTab = TabId | 'settings' | 'transactions' | 'bridge';
+type AppTab = TabId | 'settings' | 'transactions';
 
 function AppShell() {
   const { state } = useYielder();
@@ -50,7 +50,7 @@ function AppShell() {
       case 'portfolio': return <PortfolioView />;
       case 'transactions': return <TransactionsView />;
       case 'settings': return <SettingsView />;
-      case 'bridge': return <BridgeView />;
+      
     }
   };
 
@@ -63,7 +63,7 @@ function AppShell() {
           {renderTab()}
         </div>
       </main>
-      <BottomNav activeTab={['settings', 'transactions', 'bridge'].includes(activeTab) ? 'dashboard' : activeTab as TabId} onTabChange={setActiveTab} />
+      <BottomNav activeTab={['settings', 'transactions'].includes(activeTab) ? 'dashboard' : activeTab as TabId} onTabChange={setActiveTab} />
     </div>
   );
 }
