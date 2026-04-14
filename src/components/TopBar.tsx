@@ -9,13 +9,15 @@ interface TopBarProps {
   onTabChange?: (tab: string) => void;
 }
 
+const EXTRA_MENU_ITEMS = [
+  { id: 'transactions', icon: '📋', label: 'Transaction History' },
+  { id: 'bridge', icon: '🌉', label: 'Bridge (CCTP)' },
+  { id: 'settings', icon: '⚙️', label: 'Settings' },
+];
+
 export default function TopBar({ onWalletClick, onLogoClick, onTabChange }: TopBarProps) {
   const { state, updateState } = useYielder();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const toggleTheme = () => {
-    updateState({ theme: state.theme === 'dark' ? 'light' : 'dark' });
-  };
 
   return (
     <>
@@ -30,9 +32,6 @@ export default function TopBar({ onWalletClick, onLogoClick, onTabChange }: TopB
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-foreground">${state.usdcBalance.toFixed(2)}</span>
-            <button onClick={() => onTabChange?.('settings' as any)} className="text-muted-foreground hover:text-foreground text-lg">
-              ⚙️
-            </button>
             <button onClick={onWalletClick} className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
               {state.walletConnected ? (
                 <>
@@ -63,6 +62,9 @@ export default function TopBar({ onWalletClick, onLogoClick, onTabChange }: TopB
               <span className="text-lg">🏠</span>
               <span>Landing Page</span>
             </button>
+            <div className="px-4 py-1">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60 font-semibold">Main</span>
+            </div>
             {TABS.map(tab => (
               <button
                 key={tab.id}
@@ -71,6 +73,19 @@ export default function TopBar({ onWalletClick, onLogoClick, onTabChange }: TopB
               >
                 <span className="text-lg">{tab.icon}</span>
                 <span>{tab.label}</span>
+              </button>
+            ))}
+            <div className="px-4 py-1 mt-2">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60 font-semibold">More</span>
+            </div>
+            {EXTRA_MENU_ITEMS.map(item => (
+              <button
+                key={item.id}
+                onClick={() => { setMenuOpen(false); onTabChange?.(item.id); }}
+                className="flex items-center gap-3 px-4 py-3 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span>{item.label}</span>
               </button>
             ))}
           </nav>

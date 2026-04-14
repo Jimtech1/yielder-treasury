@@ -3,16 +3,18 @@ import { useYielder } from '@/lib/AppContext';
 import LandingPage from './LandingPage';
 import DashboardView from './DashboardView';
 import RampView from './RampView';
+import SwapView from './SwapView';
 import SecondaryMarketView from './SecondaryMarketView';
 import TreasuryView from './TreasuryView';
 import PortfolioView from './PortfolioView';
 import SettingsView from './SettingsView';
 import TransactionsView from './TransactionsView';
+import BridgeView from './BridgeView';
 import BottomNav, { TabId } from '@/components/BottomNav';
 import TopBar from '@/components/TopBar';
 import WalletModal from '@/components/WalletModal';
 
-type AppTab = TabId | 'settings';
+type AppTab = TabId | 'settings' | 'transactions' | 'bridge';
 
 function AppShell() {
   const { state } = useYielder();
@@ -42,11 +44,13 @@ function AppShell() {
     switch (activeTab) {
       case 'dashboard': return <DashboardView />;
       case 'ramp': return <RampView />;
+      case 'swap': return <SwapView />;
       case 'market': return <SecondaryMarketView />;
       case 'treasury': return <TreasuryView />;
       case 'portfolio': return <PortfolioView />;
       case 'transactions': return <TransactionsView />;
       case 'settings': return <SettingsView />;
+      case 'bridge': return <BridgeView />;
     }
   };
 
@@ -59,7 +63,7 @@ function AppShell() {
           {renderTab()}
         </div>
       </main>
-      <BottomNav activeTab={activeTab === 'settings' ? 'dashboard' : activeTab} onTabChange={setActiveTab} />
+      <BottomNav activeTab={['settings', 'transactions', 'bridge'].includes(activeTab) ? 'dashboard' : activeTab as TabId} onTabChange={setActiveTab} />
     </div>
   );
 }
